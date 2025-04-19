@@ -107,7 +107,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="purpose" class="level1">
 <h1>Purpose</h1>
-<p>This Quarto document is designed to demonstrate some of my basic knowledge and skills using R s.</p>
+<p>This Quarto document is designed to demonstrate some of my basic knowledge and skills using R.</p>
 </section>
 <section id="quartormarkdown-use" class="level1">
 <h1>Quarto/Rmarkdown Use</h1>
@@ -301,7 +301,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="do">## FIPS Codes ####</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="do">## Read in FIPS codes so we can join frames (Downloaded from https://www.census.gov/library/reference/code-lists/ansi.html#cou)</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>fips <span class="ot">&lt;-</span> <span class="fu">read_delim</span>(<span class="st">"/home/hilary/Documents/RExample/RExample/countyfips.txt"</span>, <span class="at">col_names =</span> <span class="cn">TRUE</span>, <span class="at">delim =</span> <span class="st">"|"</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>fips <span class="ot">&lt;-</span> <span class="fu">read_delim</span>(<span class="st">"/home/hilary/Documents/R/RExample/countyfips.txt"</span>, <span class="at">col_names =</span> <span class="cn">TRUE</span>, <span class="at">delim =</span> <span class="st">"|"</span>)</span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>fips <span class="ot">&lt;-</span> fips <span class="sc">%&gt;%</span> </span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">county=</span><span class="fu">paste</span>(STATEFP, COUNTYFP, <span class="at">sep =</span> <span class="st">""</span>)) <span class="sc">%&gt;%</span> </span>
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">county_name =</span> COUNTYNAME) <span class="sc">%&gt;%</span> </span>
@@ -319,7 +319,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Urban and Rural status ####</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="do">## Read in urban/rural county (Downloaded from https://www.ers.usda.gov/data-products/rural-urban-continuum-codes)</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>urban <span class="ot">&lt;-</span> <span class="fu">read_xlsx</span>(<span class="st">"/home/hilary/Documents/RExample/RExample/Ruralurbancontinuumcodes2023.xlsx"</span>) </span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>urban <span class="ot">&lt;-</span> <span class="fu">read_xlsx</span>(<span class="st">"/home/hilary/Documents/R/RExample/Ruralurbancontinuumcodes2023.xlsx"</span>) </span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>urban <span class="ot">&lt;-</span> urban <span class="sc">%&gt;%</span> </span>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(State <span class="sc">==</span> <span class="st">"TX"</span>) <span class="sc">%&gt;%</span> </span>
 <span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">urban_rural =</span> <span class="fu">case_when</span>(RUCC_2023 <span class="sc">&lt;</span> <span class="dv">4</span> <span class="sc">~</span> <span class="st">"Urban"</span>,</span>
@@ -340,7 +340,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="do">## Open Child Care Data #### </span></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="do">## Downloaded from https://data.texas.gov/See-Category-Tile/HHSC-CCL-Daycare-and-Residential-Operations-Data/bc5r-88dy/about_data</span></span>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>cc <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"/home/hilary/Documents/RExample/RExample/HHSC_CCL_Daycare_and_Residential_Operations_Data_20250406.csv"</span>) </span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>cc <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"/home/hilary/Documents/R/RExample/HHSC_CCL_Daycare_and_Residential_Operations_Data_20250406.csv"</span>) </span>
 <span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="do">## Prepare for joining with census_demo. Requires County name to be uppercase without COUNTY word</span></span>
 <span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>cc <span class="ot">&lt;-</span> cc <span class="sc">%&gt;%</span> </span>
@@ -732,7 +732,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </div>
 </div>
-<p>As suggested from the barplot below, much of the Texas population is concentrated in a few counties with large cities.</p>
+<p>As suggested from the bar plot below, much of the Texas population is concentrated in a few counties with large cities.</p>
 <div class="cell">
 <div class="cell-output-display">
 <div>
