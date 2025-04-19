@@ -244,7 +244,7 @@ Texas county FIPS Codes were received from the [US Census Bureau](https://www.ce
 
 ## FIPS Codes ####
 ## Read in FIPS codes so we can join frames (Downloaded from https://www.census.gov/library/reference/code-lists/ansi.html#cou)
-fips <- read_delim("/home/hilary/Documents/RExample/RExample/countyfips.txt", col_names = TRUE, delim = "|")
+fips <- read_delim("/home/hilary/Documents/R/RExample/countyfips.txt", col_names = TRUE, delim = "|")
 fips <- fips %>% 
   mutate(county=paste(STATEFP, COUNTYFP, sep = "")) %>% 
   rename(county_name = COUNTYNAME) %>% 
@@ -267,7 +267,7 @@ Rural Urban Continuum codes were downloaded from the [USDA Economic Research Ser
 
 ## Urban and Rural status ####
 ## Read in urban/rural county (Downloaded from https://www.ers.usda.gov/data-products/rural-urban-continuum-codes)
-urban <- read_xlsx("/home/hilary/Documents/RExample/RExample/Ruralurbancontinuumcodes2023.xlsx") 
+urban <- read_xlsx("/home/hilary/Documents/R/RExample/Ruralurbancontinuumcodes2023.xlsx") 
 urban <- urban %>% 
   filter(State == "TX") %>% 
   mutate(urban_rural = case_when(RUCC_2023 < 4 ~ "Urban",
@@ -293,7 +293,7 @@ The Texas Child Care Data was downloaded from the [Texas Open Data Portal](https
 ## Open Child Care Data #### 
 ## Downloaded from https://data.texas.gov/See-Category-Tile/HHSC-CCL-Daycare-and-Residential-Operations-Data/bc5r-88dy/about_data
   
-cc <- read_csv("/home/hilary/Documents/RExample/RExample/HHSC_CCL_Daycare_and_Residential_Operations_Data_20250406.csv") 
+cc <- read_csv("/home/hilary/Documents/R/RExample/HHSC_CCL_Daycare_and_Residential_Operations_Data_20250406.csv") 
 
 ## Prepare for joining with census_demo. Requires County name to be uppercase without COUNTY word
 cc <- cc %>% 
@@ -353,7 +353,7 @@ ccset <- df %>%
 
 ## Collapse to County-Level Values
 
-Now I am going to use our clean and complete data set to collapse values to the county-level, so that we end with a data set containing one record per Texas County. 
+Now I am going to use our clean and complete data set to collapse values to the county-level, so that we end with a data set containing one record per Texas County.
 
 ```{r}
 #| label: Collapse
@@ -398,7 +398,7 @@ sum_50 <- sum %>% ## 50 most populated counties
 ```
 
 At this point, the data set looks like this:
- 
+
 ```{r}
 #| label: Show Data
 #| echo: false
@@ -412,7 +412,7 @@ as_tibble(sum)
 
 ## Correlations
 
-We can start by looking at some basic correlations between some of the numeric variables in our data set. We will start by testing the correlations between population size, number of child care providers, number of child care slots, proportion of the child care providers that are home-based providers, and the proportion of the population that belong to a few select race/ethnicity groups. 
+We can start by looking at some basic correlations between some of the numeric variables in our data set. We will start by testing the correlations between population size, number of child care providers, number of child care slots, proportion of the child care providers that are home-based providers, and the proportion of the population that belong to a few select race/ethnicity groups.
 
 ```{r}
 #| label: Analysis 1
@@ -430,10 +430,9 @@ kable(cor, format = "html", digits=3) %>%
   kable_styling(font_size = 10)
 ```
 
+Unsurprisingly, a county's total population size (total_pop) is highly correlated with the total number of child care providers in the county (county_cap_n; *r* = 0.992, *p*\< 0.001) and total number child care slots in the county (county_cap_sum; *r* = 0.988, *p*\< 0.001). As population increases, child care supply increases.
 
-Unsurprisingly, a county's total population size (total_pop) is highly correlated with the total number of child care providers in the county (county_cap_n; _r_ = 0.992, _p_< 0.001) and total number child care slots in the county (county_cap_sum; _r_ = 0.988, _p_< 0.001). As population increases, child care supply increases.
-
-Next we see that as a county's total population increases, the percentage of White residents decreases (_r_ =  -0.204, _p_= 0.018) and the percentage of Black residents increases (_r_ = 0.271, _p_ < 0.001). However, a county's population size is not significantly correlated with the percentage of Hispanic residents (_r_ = 0.065, _p_= 1.000).
+Next we see that as a county's total population increases, the percentage of White residents decreases (*r* = -0.204, *p*= 0.018) and the percentage of Black residents increases (*r* = 0.271, *p* \< 0.001). However, a county's population size is not significantly correlated with the percentage of Hispanic residents (*r* = 0.065, *p*= 1.000).
 
 We can see below that even in Urban Texas counties, a small percentage of the population identifies as Black.
 
@@ -500,7 +499,7 @@ tab <- tblFun(urban$urban_rural)
 kable(tab, format = "html", caption = "Texas Counties: Urban/Rural Status") 
 ```
 
-As suggested from the barplot below, much of the Texas population is concentrated in a few counties with large cities. 
+As suggested from the barplot below, much of the Texas population is concentrated in a few counties with large cities.
 
 ```{r}
 #| label: Barplot1
@@ -517,7 +516,7 @@ ggplot(sum_50, aes(x=reorder(county_name, total_pop), y=total_pop,total_pop, fil
   coord_flip()
 ```
 
-Within these counties, the total supply of child care slots generally aligns with the population of the county. However, it does appear that counties with a higher poverty rate _may_ have slightly lower total child care capacity in comparison to the population size.
+Within these counties, the total supply of child care slots generally aligns with the population of the county. However, it does appear that counties with a higher poverty rate *may* have slightly lower total child care capacity in comparison to the population size.
 
 ```{r}
 #| label: Barplot2
@@ -534,9 +533,10 @@ ggplot(sum_50, aes(x=reorder(county_name, total_pop), y=county_cap_sum, county_c
        y = "Total Licensed Capacity")+
   coord_flip()
 ```
+
 This raises the question whether child care coverage may be lower in higher poverty areas, which we can test with linear regression. Next, I am going to create a function and use it to output regression results. I realize this function does not save much work, but wanted to demonstrate my ability to create and use my own function.
 
-For the following analysis, I am using the variable perc_pop04_cap, which is meant to be a proxy child care coverage/availability in the county. I calculated perc_pop04_cap as **(total number licensed capacity child care slots)/(Total population of children under 5 years) X 100**, and top-coded this to 100%. It is important to note that most child care providers never operate at their full licensed capacity, which is determined based on physical space available to the operation. From previous research, we estimate that on average, Texas child care providers operate at approximately 70% of their total licensed capacity. 
+For the following analysis, I am using the variable perc_pop04_cap, which is meant to be a proxy child care coverage/availability in the county. I calculated perc_pop04_cap as **(total number licensed capacity child care slots)/(Total population of children under 5 years) X 100**, and top-coded this to 100%. It is important to note that most child care providers never operate at their full licensed capacity, which is determined based on physical space available to the operation. From previous research, we estimate that on average, Texas child care providers operate at approximately 70% of their total licensed capacity.
 
 ```{r}
 #| label: Analysis reg1
@@ -560,7 +560,7 @@ regout(data = sum, formula = "perc_pop04_cap ~ poverty_rate" )
 
 ```
 
-The results indicate that poverty rate does _not_ significantly predict child care availability in the full population of Texas counties. However, what we looked at before was the highest populated counties, that tend to surround urban areas. Let's look at a graph showing how the association between child care availability and population differs by urban/rural status.
+The results indicate that poverty rate does *not* significantly predict child care availability in the full population of Texas counties. However, what we looked at before was the highest populated counties, that tend to surround urban areas. Let's look at a graph showing how the association between child care availability and population differs by urban/rural status.
 
 ```{r}
 #| label: Analysis reg2
@@ -581,7 +581,7 @@ ggplot(sum_na, aes(x=perc_pop04_cap, y=poverty_rate, color=urban_rural, na.rm = 
        color = "County Status")
 ```
 
-We can now test whether adding a county's urban/rural designation and/or an interaction between urban/rural and poverty rate improve model fit. 
+We can now test whether adding a county's urban/rural designation and/or an interaction between urban/rural and poverty rate improve model fit.
 
 ```{r}
 #| label: Analysis reg2a
@@ -593,7 +593,8 @@ We can now test whether adding a county's urban/rural designation and/or an inte
 regout(data = sum, formula = "perc_pop04_cap ~ poverty_rate + urban_rural" )
 regout(data = sum, formula = "perc_pop04_cap ~ poverty_rate + urban_rural + poverty_rate:urban_rural")
 ```
-You can see from the likelihood ratio test below, that adding an interaction between poverty rate and urban/rural status significantly improves model fit (_p_ < .000). You can also see from the results above that interaction itself is significant (_p_ = 0029). Although poverty rate does not predict child care coverage in rural counties, in urban counties an increase in poverty rate by 1 percent is associated with a 1.09 percentage point decrease in child care coverage. 
+
+You can see from the likelihood ratio test below, that adding an interaction between poverty rate and urban/rural status significantly improves model fit (*p* \< .000). You can also see from the results above that interaction itself is significant (*p* = 0029). Although poverty rate does not predict child care coverage in rural counties, in urban counties an increase in poverty rate by 1 percent is associated with a 1.09 percentage point decrease in child care coverage.
 
 ```{r}
 #| label: Analysis reg3
@@ -609,7 +610,6 @@ lrtest(cap_pov_sum2, cap_pov_sum3)
 ```
 
 As you can see, the poverty rate within urban Texas counties varies considerably.
-
 
 ```{r}
 #| label: bar
@@ -630,4 +630,4 @@ ggplot(urban, aes(x = poverty_rate)) +
 
 ## Summary
 
-Analysis indicates that within urban Texas counties, on average counties with higher poverty rates may have have lower overall child care availability for their early childhood population. Although licensed capacity is just a rough proxy of child care supply and the population of children under 5 years is a rough proxy for child care demand, the results suggest that inequity of child care coverage may be present in urban Texas counties. 
+Analysis indicates that within urban Texas counties, on average counties with higher poverty rates may have have lower overall child care availability for their early childhood population. Although licensed capacity is just a rough proxy of child care supply and the population of children under 5 years is a rough proxy for child care demand, the results suggest that inequity of child care coverage may be present in urban Texas counties.
