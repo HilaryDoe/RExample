@@ -1,0 +1,633 @@
+---
+title: "DoeRSample"
+author: "Hilary Doe, PhD"
+format: 
+  html:
+    code-overflow: wrap
+editor: visual
+---
+
+# Purpose
+
+This Quarto document is designed to demonstrate some of my basic knowledge and skills using R s.
+
+# Quarto/Rmarkdown Use
+
+I composed this Quarto document in the "**Source** View" rather than relying on the **Visual** View" to further demonstrate my coding abilities.
+
+This document begins with a code-chunk in which I library the necessary packages, but with `include: false` to avoid including the code and output in the resulting document.
+
+```{r}
+#| include: false
+# Install and Library Pacackages ####
+#install.packages("tidyverse")
+#install.packages("tidycensus")
+#install.packages("paletteer")
+#install.packages("gridExtra")
+#install.packages("collapse")
+#install.packages("lmtest")
+#install.packages("marginaleffects")
+#install.packages("correlation")
+#install.packages("knitr")
+#install.packages("kableExtra")
+#install.packages("janitor")
+#install.packages("expss")
+
+library(tidyverse)
+library(tidycensus)
+library(tidyverse)
+library(paletteer)
+library(gridExtra)
+library(readxl)
+library(collapse)
+library(lmtest)
+library(marginaleffects)
+library(correlation)
+library(knitr)
+library(kableExtra)
+library(broom)
+```
+
+In this document I will:
+
+-   Import several publicly available data sets of different types and via different methods
+-   Clean those data sets to create and maintain the variables I need
+-   Join data sets together
+-   Run some basic analysis
+-   Create and use a function
+-   Create some basic graphs using `ggplot2`
+    -   Box plots
+    -   Bar charts
+    -   Scatter plots with regression lines
+
+I will alternate between showing all code, all code and output, and just output within the document to display my current coding style in some places and simplify the output in others.
+
+# Import and Clean Data
+
+## Census Data
+
+The following code chunk uses `echo:true` and `output: false` to show the code but suppress the output.
+
+```{r}
+#| label: Census Data
+#| echo: true
+#| output: false
+
+# Get Census Data ####
+
+# census_api_key("288a7aed7ac29b4739f8b2870535a07a1f6cf3c6")
+
+# Here are the variable names and descriptions we are collecting:
+  # DP05_0005E      Estimate!!SEX AND AGE!!Total population!!Under 5 years
+  # S1701_C02_001E  Estimate!!Percent below poverty level!!Population for whom poverty status is determined"
+  # S2301_C04_001E  Estimate!!Unemployment rate!!Population 16 years and over"
+  # B03002_001E     Estimate!!Total:
+  # B03002_003E     Estimate!!Total:!!Not Hispanic or Latino:!!White alone
+  # B03002_004E     Estimate!!Total:!!Not Hispanic or Latino:!!Black or African American alone
+  # B03002_005E     Estimate!!Total:!!Not Hispanic or Latino:!!American Indian and Alaska Native alone
+  # B03002_006E     Estimate!!Total:!!Not Hispanic or Latino:!!Asian alone
+  # B03002_007E     Estimate!!Total:!!Not Hispanic or Latino:!!Native Hawaiian and Other Pacific Islander alone
+  # B03002_008E     Estimate!!Total:!!Not Hispanic or Latino:!!Some other race alone
+  # B03002_009E     Estimate!!Total:!!Not Hispanic or Latino:!!Two or more races:
+  # B03002_012E     Estimate!!Total:!!Hispanic or Latino:
+
+## Population Under 5 ####
+pop04 <- get_acs(geography = "county",
+                   variables = "DP05_0005",
+                   state = "texas",
+                   year = 2023) %>%
+  rename(pop04 = estimate,
+         pop04_moe = moe,
+         county = GEOID) %>%
+  select(county, pop04, pop04_moe)
+
+## Poverty ####
+poverty <- get_acs(geography = "county",
+                   variables = "S1701_C03_001",
+                   state = "texas",
+                   year = 2023) %>%
+  rename(poverty_rate = estimate,
+         poverty_rate_moe = moe,
+         county = GEOID) %>%
+  select(county, poverty_rate, poverty_rate_moe)
+
+## Unemployment ####
+unemploy <- get_acs(geography = "county",
+                    variables = "S2301_C04_001",
+                    state = "texas",
+                    year = 2023,) %>%
+  rename(unemployment_rate = estimate,
+         unemployment_rate_moe = moe,
+         county = GEOID) %>%
+  select(county, unemployment_rate, unemployment_rate_moe)
+
+## Race/Ethnicity ####
+total_pop <- get_acs(geography = "county",
+                     variables = "B03002_001",
+                     state = "texas",
+                     year = 2023,) %>%
+  rename(total_pop = estimate,
+         total_pop_moe = moe,
+         county = GEOID) %>%
+  select(county, total_pop, total_pop_moe)
+
+white_pop <- get_acs(geography = "county",
+                     variables = "B03002_003",
+                     state = "texas",
+                     year = 2023,) %>%
+  rename(white_pop = estimate,
+         white_pop_moe = moe,
+         county = GEOID) %>%
+  select(county, white_pop, white_pop_moe)
+
+black_pop <- get_acs(geography = "county",
+                     variables = "B03002_004",
+                     state = "texas",
+                     year = 2023,) %>%
+    rename(black_pop = estimate,
+         black_pop_moe = moe,
+         county = GEOID) %>%
+  select(county, black_pop, black_pop_moe)
+
+ai_pop <- get_acs(geography = "county",
+                  variables = "B03002_005",
+                  state = "texas",
+                  year = 2023,) %>%
+    rename(ai_pop = estimate,
+           ai_pop_moe = moe,
+           county = GEOID) %>%
+    select(county, ai_pop, ai_pop_moe)
+
+asian_pop <- get_acs(geography = "county",
+                     variables = "B03002_006",
+                     state = "texas",
+                     year = 2023,) %>%
+  rename(asian_pop = estimate,
+         asian_pop_moe = moe,
+         county = GEOID) %>%
+  select(county, asian_pop, asian_pop_moe)
+
+nhpi_pop <- get_acs(geography = "county",
+                    variables = "B03002_007",
+                    state = "texas",
+                    year = 2023,) %>%
+    rename(nhpi_pop = estimate,
+           nhpi_pop_moe = moe,
+           county = GEOID) %>%
+    select(county, nhpi_pop, nhpi_pop_moe)
+
+other_pop <- get_acs(geography = "county",
+                     variables = "B03002_008",
+                     state = "texas",
+                     year = 2023,) %>%
+  rename(other_pop = estimate,
+         other_pop_moe = moe,
+         county = GEOID) %>%
+    select(county, other_pop, other_pop_moe)
+
+twoplus_pop <- get_acs(geography = "county",
+                       variables = "B03002_009",
+                       state = "texas",
+                       year = 2023,) %>%
+  rename(twoplus_pop = estimate,
+         twoplus_pop_moe = moe,
+         county = GEOID) %>%
+    select(county, twoplus_pop, twoplus_pop_moe)
+
+hisp_pop <- get_acs(geography = "county",
+                    variables = "B03002_012",
+                    state = "texas",
+                    year = 2023,) %>%
+  rename(hisp_pop = estimate,
+         hisp_pop_moe = moe,
+         county = GEOID) %>%
+  select(county, hisp_pop, hisp_pop_moe)
+
+#Join race/Ethnicity frames together
+race_eth <- total_pop %>%
+  left_join(white_pop) %>%
+  left_join(black_pop) %>%
+  left_join(ai_pop) %>%
+  left_join(asian_pop) %>%
+  left_join(nhpi_pop) %>%
+  left_join(other_pop) %>%
+  left_join(twoplus_pop) %>%
+  left_join(hisp_pop)
+
+# Create percentages of each race/ethnicity
+race_eth <- race_eth %>%
+  mutate(perc_white = round((white_pop/total_pop)*100, digits = 1),
+         perc_black = round((black_pop/total_pop)*100, digits = 1),
+         perc_ai = round((ai_pop/total_pop)*100, digits = 1),
+         perc_asian = round((asian_pop/total_pop)*100, digits = 1),
+         perc_nhpi = round((nhpi_pop/total_pop)*100, digits = 1),
+         perc_other = round((other_pop/total_pop)*100, digits = 1),
+         perc_twoplus = round((twoplus_pop/total_pop)*100, digits = 1),
+         perc_hisp = round((hisp_pop/total_pop)*100, digits = 1)) %>%
+  select(county, total_pop, perc_white, perc_black, perc_ai, perc_asian, perc_nhpi, perc_other, perc_twoplus, perc_hisp)
+
+## Join to create census_demo ####
+census_demo <- pop04 %>% 
+  left_join(race_eth) %>%
+  left_join(poverty) %>%
+  left_join(unemploy)
+```
+
+## FIPS Codes
+
+Texas county FIPS Codes were received from the [US Census Bureau](https://www.census.gov/library/reference/code-lists/ansi.html#cou) website.
+
+```{r}
+#| label: FIPS Codes
+#| echo: true
+#| output: false
+
+## FIPS Codes ####
+## Read in FIPS codes so we can join frames (Downloaded from https://www.census.gov/library/reference/code-lists/ansi.html#cou)
+fips <- read_delim("/home/hilary/Documents/RExample/RExample/countyfips.txt", col_names = TRUE, delim = "|")
+fips <- fips %>% 
+  mutate(county=paste(STATEFP, COUNTYFP, sep = "")) %>% 
+  rename(county_name = COUNTYNAME) %>% 
+  select(county, county_name) %>% 
+  mutate(county_name = str_to_upper(county_name))
+
+##Join census demo with FIPS codes
+census_demo <- census_demo %>%
+  left_join(fips)
+```
+
+## Urban/Rural Status
+
+Rural Urban Continuum codes were downloaded from the [USDA Economic Research Service](https://www.ers.usda.gov/data-products/rural-urban-continuum-codes)
+
+```{r}
+#| label: Urban/Rural Status
+#| echo: true
+#| output: false
+
+## Urban and Rural status ####
+## Read in urban/rural county (Downloaded from https://www.ers.usda.gov/data-products/rural-urban-continuum-codes)
+urban <- read_xlsx("/home/hilary/Documents/RExample/RExample/Ruralurbancontinuumcodes2023.xlsx") 
+urban <- urban %>% 
+  filter(State == "TX") %>% 
+  mutate(urban_rural = case_when(RUCC_2023 < 4 ~ "Urban",
+                                 RUCC_2023 >= 4 ~ "Rural")) %>% 
+  rename(county = FIPS) %>% 
+  select(county, urban_rural)
+
+## Join census demo with urban/rural info
+census_demo <- census_demo %>% 
+  left_join(urban)
+```
+
+## Texas Child Care Data
+
+The Texas Child Care Data was downloaded from the [Texas Open Data Portal](https://data.texas.gov/See-Category-Tile/HHSC-CCL-Daycare-and-Residential-Operations-Data/bc5r-88dy/about_data)
+
+```{r}
+#| label: Child Care Data
+#| echo: true
+#| output: false
+#|   
+# Child Care Data ####
+## Open Child Care Data #### 
+## Downloaded from https://data.texas.gov/See-Category-Tile/HHSC-CCL-Daycare-and-Residential-Operations-Data/bc5r-88dy/about_data
+  
+cc <- read_csv("/home/hilary/Documents/RExample/RExample/HHSC_CCL_Daycare_and_Residential_Operations_Data_20250406.csv") 
+
+## Prepare for joining with census_demo. Requires County name to be uppercase without COUNTY word
+cc <- cc %>% 
+  mutate(county = "COUNTY") %>% 
+  mutate(county_name=paste(COUNTY, county, sep = " ")) %>%
+  mutate(case_when(county_name == "DEAFSMITH COUNTY" ~ "DEAF SMITH COUNTY",
+                   TRUE ~ county_name )) %>% 
+  select(!county)
+  
+##Join census_demo with child care data
+df <- census_demo %>% 
+ full_join(cc)
+
+## Clean up Child Care data ####
+  ## Remove non-traditional child care programs, and combine registered and licensed child care homes as "Home"s
+df <- df %>% 
+  filter(OPERATION_TYPE != "Child Placing Agency" & OPERATION_TYPE != "General Residential Operation" & OPERATION_TYPE != "Listed Family Home")  %>% 
+  filter( is.na(CARE_TYPE) | (CARE_TYPE != "Before/After School Program" & CARE_TYPE != "School Age Program")) %>% 
+  filter(TEMPORARILY_CLOSED != "YES") %>% 
+  mutate(operation_type = OPERATION_TYPE) %>% 
+  mutate(prov_type = case_when(operation_type == "Licensed Center" ~ "Center",
+                               operation_type == "Registered Child-Care Home" ~ "Home",
+                               operation_type == "Licensed Child-Care Home" ~ "Home")
+         )
+
+## More cleaning. 
+ccset <- df %>% 
+  select(county, perc_white, perc_black, perc_hisp, poverty_rate, unemployment_rate, county_name, OPERATION_ID, OPERATION_NAME, LOCATION_ADDRESS, ACCEPTS_CHILD_CARE_SUBSIDIES, HOURS_OF_OPERATION, DAYS_OF_OPERATION, TOTAL_CAPACITY, prov_type, total_pop, urban_rural, pop04) %>% ##Trim dataset to variables we want
+  rename_with(tolower, .cols = everything()) %>% ## Rename to lowercase for easier typing 
+  mutate(prov_type = as.factor(prov_type), ## Convert to factor
+         county_name = as.factor(county_name), ## Convert to factor
+         days_of_operation = as.factor(days_of_operation) ## Convert to factor
+  ) %>% 
+  mutate(hours_open = str_split_i(hours_of_operation, "-", 1), ## Isolate Opening Time
+         hours_close = str_split_i(hours_of_operation, "-", 2)) %>% ## Isolate Closing time
+  mutate(hours_close_hr = as.numeric(str_split_i(hours_close, ":", 1)), ## Isolate closing hour
+         hours_close_min = str_split_i(hours_close, ":", 2), ## Isolate closing minute = AM PM
+         hours_close_aft = str_split_i(hours_close, " ", 2)) %>% ## Isolate AM vs. PM
+  mutate(hours_close_min = as.numeric(str_split_i(hours_close_min, " ", 1))) %>% ## Isolate closing minute
+  mutate(hours_close_hrplus12 = hours_close_hr + 12) %>% ## Convert closing hour to 24-hour time (PM)
+  mutate(hours_close_hr24 = case_when(hours_close_aft == "PM" ~ hours_close_hrplus12, ## Use 24-hour PM time if PM
+                                      hours_close_aft == "AM" ~ hours_close_hr) ## Use 24-hour AM time if AM
+         ) %>% 
+  mutate(hours_close_hr24 = (hours_close_hr24*100)+hours_close_min) %>% ## Multiply by 100 so 12 hours becomes 1200
+  select(!c(hours_close_hr, hours_close_min, hours_close_hrplus12, hours_close_aft)) %>% 
+  mutate(open_aft_6 = case_when(hours_close_hr24 > 1800 ~ 1, ## Open_aft_6 = 1 if open past 6 pm
+                                          TRUE ~ 0)) %>% ## Otherwise 0
+  mutate(open_wknd = case_when(str_detect(days_of_operation, "Sat") ~ 1, ## Open weekend = 1 if open Saturday
+                               str_detect(days_of_operation, "Sun") ~ 1, ## or Sunday
+                               TRUE ~ 0)) %>% 
+  mutate(urban_rural = as.factor(urban_rural)) %>% ## Convert to factor
+  mutate(total_cap_home = case_when(prov_type == "Home" ~ total_capacity, ## Total capacity just for Homes
+                                    TRUE ~ 0),
+         total_cap_center =  case_when(prov_type == "Center" ~ total_capacity, ## Total capacity just for Centers
+                                       TRUE ~ 0))
+```
+
+## Collapse to County-Level Values
+
+Now I am going to use our clean and complete data set to collapse values to the county-level, so that we end with a data set containing one record per Texas County. 
+
+```{r}
+#| label: Collapse
+#| echo: true
+#| output: false
+#|   
+
+# Collapse to county-level values ####
+sum <- ccset %>% 
+  group_by(county_name) %>% 
+  summarize(county_cap_sum = sum(total_capacity, na.rm = TRUE),
+            county_cap_mean = mean(total_capacity, na.rm = TRUE),
+            county_cap_n = sum(!is.na((total_capacity))), 
+            county_home_n = sum(prov_type == "Home"),
+            county_center_n = sum(prov_type == "Center"),
+            perc_home = mean(prov_type == "Home", na.rm = TRUE), 
+            perc_white = mean(perc_white, na.rm = TRUE), 
+            perc_black = mean(perc_black, na.rm = TRUE), 
+            perc_hisp = mean(perc_hisp, na.rm = TRUE),
+            total_pop = mean(total_pop, na.rm = TRUE), 
+            unemployment_rate = mean(unemployment_rate, na.rm = TRUE), 
+            poverty_rate = mean(poverty_rate, na.rm = TRUE), 
+            total_pop = mean(total_pop, na.rm = TRUE),
+            open_wknd = sum(open_wknd, na.rm = TRUE),
+            open_aft_6 = sum(open_aft_6, na.rm = TRUE),
+            urban_rural = fmode(urban_rural, na.rm = TRUE), ## Keeps most common value... which is same across county
+            county_cap_home_sum = sum(total_cap_home, na.rm = TRUE),
+            county_cap_center_sum = sum(total_cap_center, na.rm = TRUE),
+            pop04 = mean(pop04)
+  ) %>% 
+  mutate(perc_cap_home = (county_cap_home_sum/county_cap_sum)*100,
+         pop_rank = rank(total_pop),
+         perc_pop04_cap = (county_cap_sum/pop04)*100,
+         total_pop1000 = total_pop/1000,
+         perc_home = perc_home*100) %>% 
+  mutate(perc_pop04_cap = case_when(perc_pop04_cap > 100 ~ 100,
+                                    TRUE ~ perc_pop04_cap)) ## Cap at 100%. Note that very few child care providers operate at their full licensed capacity... In fact we estimate that on average they operate at 70% capacity. Just because they have the physical space for 100 kids doesn't mean they have any intention to care for 100 kids or are staffed to do so. 
+
+## Create a subsets of data that I may want to use
+sum_50 <- sum %>% ## 50 most populated counties
+  filter(pop_rank > 189 & !is.na(total_pop))
+```
+
+At this point, the data set looks like this:
+ 
+```{r}
+#| label: Show Data
+#| echo: false
+#| output: true
+#| 
+
+as_tibble(sum)
+```
+
+# Analysis
+
+## Correlations
+
+We can start by looking at some basic correlations between some of the numeric variables in our data set. We will start by testing the correlations between population size, number of child care providers, number of child care slots, proportion of the child care providers that are home-based providers, and the proportion of the population that belong to a few select race/ethnicity groups. 
+
+```{r}
+#| label: Analysis 1
+#| echo: true
+#| output: true
+
+## Test Correlations
+cor <- sum %>% ## Select a few continuous/percentage variables 
+  select(total_pop, county_cap_n, county_cap_sum, perc_home, perc_white, perc_black, perc_hisp) %>% 
+  filter(!is.na(total_pop)) %>% 
+  correlation::correlation(include_factors = TRUE, method = "auto") %>% 
+  select(Parameter1, Parameter2, r, df_error, p, Method, n_Obs)
+  
+kable(cor, format = "html", digits=3) %>%
+  kable_styling(font_size = 10)
+```
+
+
+Unsurprisingly, a county's total population size (total_pop) is highly correlated with the total number of child care providers in the county (county_cap_n; _r_ = 0.992, _p_< 0.001) and total number child care slots in the county (county_cap_sum; _r_ = 0.988, _p_< 0.001). As population increases, child care supply increases.
+
+Next we see that as a county's total population increases, the percentage of White residents decreases (_r_ =  -0.204, _p_= 0.018) and the percentage of Black residents increases (_r_ = 0.271, _p_ < 0.001). However, a county's population size is not significantly correlated with the percentage of Hispanic residents (_r_ = 0.065, _p_= 1.000).
+
+We can see below that even in Urban Texas counties, a small percentage of the population identifies as Black.
+
+```{r}
+#| label: Graph 1
+#| echo: false
+#| output: true
+#| warning: false
+
+## Adjust data set to remove NAs
+box <- sum %>% 
+  filter(!is.na(perc_white))
+
+## White Plot
+plot1 <- ggplot(box, aes(x=urban_rural, y=perc_white)) +
+  geom_boxplot(fill="cornflowerblue")+
+  labs(
+    title = "White",
+    #subtitle = "White",
+    x = "County Type",
+    y = "Percent White"
+  ) + 
+  ylim(0, 100)
+
+## Black Plot
+plot2 <- ggplot(box, aes(x=urban_rural, y=perc_black)) +
+  geom_boxplot(fill="darkslategray")+
+  labs(
+    title = "Black",
+    #subtitle = "Black",
+    x = "County Type",
+    y = "Percent Black"
+  ) + 
+  ylim(0, 100)
+plot3 <- ggplot(box, aes(x=urban_rural, y=perc_hisp)) +
+  geom_boxplot(fill="slateblue")+
+  labs(
+    title = "Hispanic",
+    #subtitle = "Hispanic",
+    x = "County Type",
+    y = "Percent Hispanic"
+  ) + 
+  ylim(0, 100)
+
+grid.arrange(plot1, plot2, plot3, ncol=3)
+```
+
+## Regression
+
+Texas is a very large state, with 254 counties in all. Of these, two-thirds are considered rural counties, some of which have no licensed or register child child care providers that meet our inclusion criteria for the sample.
+
+```{r}
+#| label: Analysis 2
+#| echo: false
+#| output: true
+
+tblFun <- function(x){
+    tbl <- table(x)
+    res <- cbind(tbl,round(prop.table(tbl)*100,2))
+    colnames(res) <- c('Count','Percentage')
+    res
+}
+tab <- tblFun(urban$urban_rural) 
+kable(tab, format = "html", caption = "Texas Counties: Urban/Rural Status") 
+```
+
+As suggested from the barplot below, much of the Texas population is concentrated in a few counties with large cities. 
+
+```{r}
+#| label: Barplot1
+#| echo: false
+#| output: true
+#| warning: false
+
+# Barplot- Total Population in 50 Most-Populated Texas Counties
+ggplot(sum_50, aes(x=reorder(county_name, total_pop), y=total_pop,total_pop, fill = poverty_rate)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Total Population in 50 Most-Populated Texas Counties",
+       x = "County",
+       y = "Population")+
+  coord_flip()
+```
+
+Within these counties, the total supply of child care slots generally aligns with the population of the county. However, it does appear that counties with a higher poverty rate _may_ have slightly lower total child care capacity in comparison to the population size.
+
+```{r}
+#| label: Barplot2
+#| echo: false
+#| output: true
+#| warning: false
+
+# Barplot - Licensed Capacity in 50 Most-Populated Texas Counties
+ggplot(sum_50, aes(x=reorder(county_name, total_pop), y=county_cap_sum, county_cap_sum, fill = poverty_rate)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Total Licensed Capacity in 50 Most-Populated Texas Counties:",
+       subtitle = "Sorted by total population (Descending)",
+       x = "County",
+       y = "Total Licensed Capacity")+
+  coord_flip()
+```
+This raises the question whether child care coverage may be lower in higher poverty areas, which we can test with linear regression. Next, I am going to create a function and use it to output regression results. I realize this function does not save much work, but wanted to demonstrate my ability to create and use my own function.
+
+For the following analysis, I am using the variable perc_pop04_cap, which is meant to be a proxy child care coverage/availability in the county. I calculated perc_pop04_cap as **(total number licensed capacity child care slots)/(Total population of children under 5 years) X 100**, and top-coded this to 100%. It is important to note that most child care providers never operate at their full licensed capacity, which is determined based on physical space available to the operation. From previous research, we estimate that on average, Texas child care providers operate at approximately 70% of their total licensed capacity. 
+
+```{r}
+#| label: Analysis reg1
+#| echo: true
+#| output: true
+#| 
+## Create functions for simple Regression output 
+regout <- function(data, formula, digits = 3){
+  mod <<- lm(formula, data = data) ## Run lm model
+  kable(tidy(mod), digits = digits, caption = {{formula}}) ## kable output
+} 
+```
+
+```{r}
+#| label: Analysis reg1a
+#| echo: false
+#| output: true
+#| 
+## Predict Percent of Population with Licensed Capacity Child Care Slots
+regout(data = sum, formula = "perc_pop04_cap ~ poverty_rate" )
+
+```
+
+The results indicate that poverty rate does _not_ significantly predict child care availability in the full population of Texas counties. However, what we looked at before was the highest populated counties, that tend to surround urban areas. Let's look at a graph showing how the association between child care availability and population differs by urban/rural status.
+
+```{r}
+#| label: Analysis reg2
+#| echo: false
+#| warning: false
+#| output: true
+
+sum_na <- sum %>% 
+  filter(!is.na(perc_pop04_cap)) ## Data set without NAs
+
+## Scatter plot with regression lines
+ggplot(sum_na, aes(x=perc_pop04_cap, y=poverty_rate, color=urban_rural, na.rm = FALSE)) +
+  geom_point()+ 
+  geom_smooth(method = lm) +
+  labs(title = "Percent Child Care Coverage by Poverty Rate and Urban/Rural County Status",
+       x = "Percent Child Care Coverage",
+       y = "Poverty Rate",
+       color = "County Status")
+```
+
+We can now test whether adding a county's urban/rural designation and/or an interaction between urban/rural and poverty rate improve model fit. 
+
+```{r}
+#| label: Analysis reg2a
+#| echo: false
+#| warning: false
+#| output: true
+
+## Predict Percent of Population with Licensed Capacity Child Care Slots
+regout(data = sum, formula = "perc_pop04_cap ~ poverty_rate + urban_rural" )
+regout(data = sum, formula = "perc_pop04_cap ~ poverty_rate + urban_rural + poverty_rate:urban_rural")
+```
+You can see from the likelihood ratio test below, that adding an interaction between poverty rate and urban/rural status significantly improves model fit (_p_ < .000). You can also see from the results above that interaction itself is significant (_p_ = 0029). Although poverty rate does not predict child care coverage in rural counties, in urban counties an increase in poverty rate by 1 percent is associated with a 1.09 percentage point decrease in child care coverage. 
+
+```{r}
+#| label: Analysis reg3
+#| echo: true
+#| output: true
+#| warning: false
+## Compare models
+cap_pov_sum2 <- lm(perc_pop04_cap ~ poverty_rate + urban_rural, data= sum)
+cap_pov_sum3 <- lm(perc_pop04_cap ~ poverty_rate + poverty_rate:urban_rural, data= sum)
+
+lrtest(cap_pov_sum2, cap_pov_sum3)
+
+```
+
+As you can see, the poverty rate within urban Texas counties varies considerably.
+
+
+```{r}
+#| label: bar
+#| echo: false
+#| output: true
+#| warning: false
+urban <- sum %>% 
+  filter(urban_rural == "Urban")
+
+# Histogram bins
+ggplot(urban, aes(x = poverty_rate)) + 
+  geom_histogram(color = "white", fill = "darkslategrey", 
+                 binwidth = 1)+
+  labs(title = "Poverty Rate in Urban Texas Counties",
+       x = "Poverty Rate",
+       y = "Count")
+```
+
+## Summary
+
+Analysis indicates that within urban Texas counties, on average counties with higher poverty rates may have have lower overall child care availability for their early childhood population. Although licensed capacity is just a rough proxy of child care supply and the population of children under 5 years is a rough proxy for child care demand, the results suggest that inequity of child care coverage may be present in urban Texas counties. 
