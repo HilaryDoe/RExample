@@ -107,7 +107,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="purpose" class="level1">
 <h1>Purpose</h1>
-<p>This Quarto document is designed to demonstrate some of my basic knowledge and skills using R.</p>
+<p>I created this Quarto document an informal demonstration some of my basic knowledge and skills using R for data cleaning and analysis.</p>
 </section>
 <section id="quartormarkdown-use" class="level1">
 <h1>Quarto/Rmarkdown Use</h1>
@@ -137,7 +137,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Get Census Data ####</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># census_api_key("288a7aed7ac29b4739f8b2870535a07a1f6cf3c6")</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># census_api_key("[Insert your Census API key here]")</span></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Here are the variable names and descriptions we are collecting:</span></span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># DP05_0005E      Estimate!!SEX AND AGE!!Total population!!Under 5 years</span></span>
@@ -315,7 +315,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="urbanrural-status" class="level2">
 <h2 class="anchored" data-anchor-id="urbanrural-status">Urban/Rural Status</h2>
-<p>Rural Urban Continuum codes were downloaded from the <a href="https://www.ers.usda.gov/data-products/rural-urban-continuum-codes">USDA Economic Research Service</a></p>
+<p>Rural Urban Continuum codes were downloaded from the <a href="https://www.ers.usda.gov/data-products/rural-urban-continuum-codes">USDA Economic Research Service</a>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Urban and Rural status ####</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="do">## Read in urban/rural county (Downloaded from https://www.ers.usda.gov/data-products/rural-urban-continuum-codes)</span></span>
@@ -334,68 +334,67 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="texas-child-care-data" class="level2">
 <h2 class="anchored" data-anchor-id="texas-child-care-data">Texas Child Care Data</h2>
-<p>The Texas Child Care Data was downloaded from the <a href="https://data.texas.gov/See-Category-Tile/HHSC-CCL-Daycare-and-Residential-Operations-Data/bc5r-88dy/about_data">Texas Open Data Portal</a></p>
+<p>The Texas Child Care Data was downloaded from the <a href="https://data.texas.gov/See-Category-Tile/HHSC-CCL-Daycare-and-Residential-Operations-Data/bc5r-88dy/about_data">Texas Open Data Portal</a>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Child Care Data ####</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="do">## Open Child Care Data #### </span></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="do">## Downloaded from https://data.texas.gov/See-Category-Tile/HHSC-CCL-Daycare-and-Residential-Operations-Data/bc5r-88dy/about_data</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>cc <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"/home/hilary/Documents/R/RExample/HHSC_CCL_Daycare_and_Residential_Operations_Data_20250406.csv"</span>) </span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="do">## Prepare for joining with census_demo. Requires County name to be uppercase without COUNTY word</span></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>cc <span class="ot">&lt;-</span> cc <span class="sc">%&gt;%</span> </span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">county =</span> <span class="st">"COUNTY"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">county_name=</span><span class="fu">paste</span>(COUNTY, county, <span class="at">sep =</span> <span class="st">" "</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">case_when</span>(county_name <span class="sc">==</span> <span class="st">"DEAFSMITH COUNTY"</span> <span class="sc">~</span> <span class="st">"DEAF SMITH COUNTY"</span>,</span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>                   <span class="cn">TRUE</span> <span class="sc">~</span> county_name )) <span class="sc">%&gt;%</span> </span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">!</span>county)</span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="do">##Join census_demo with child care data</span></span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> census_demo <span class="sc">%&gt;%</span> </span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a> <span class="fu">full_join</span>(cc)</span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a><span class="do">## Clean up Child Care data ####</span></span>
-<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Remove non-traditional child care programs, and combine registered and licensed child care homes as "Home"s</span></span>
-<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> </span>
-<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(OPERATION_TYPE <span class="sc">!=</span> <span class="st">"Child Placing Agency"</span> <span class="sc">&amp;</span> OPERATION_TYPE <span class="sc">!=</span> <span class="st">"General Residential Operation"</span> <span class="sc">&amp;</span> OPERATION_TYPE <span class="sc">!=</span> <span class="st">"Listed Family Home"</span>)  <span class="sc">%&gt;%</span> </span>
-<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>( <span class="fu">is.na</span>(CARE_TYPE) <span class="sc">|</span> (CARE_TYPE <span class="sc">!=</span> <span class="st">"Before/After School Program"</span> <span class="sc">&amp;</span> CARE_TYPE <span class="sc">!=</span> <span class="st">"School Age Program"</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(TEMPORARILY_CLOSED <span class="sc">!=</span> <span class="st">"YES"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">operation_type =</span> OPERATION_TYPE) <span class="sc">%&gt;%</span> </span>
-<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">prov_type =</span> <span class="fu">case_when</span>(operation_type <span class="sc">==</span> <span class="st">"Licensed Center"</span> <span class="sc">~</span> <span class="st">"Center"</span>,</span>
-<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>                               operation_type <span class="sc">==</span> <span class="st">"Registered Child-Care Home"</span> <span class="sc">~</span> <span class="st">"Home"</span>,</span>
-<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>                               operation_type <span class="sc">==</span> <span class="st">"Licensed Child-Care Home"</span> <span class="sc">~</span> <span class="st">"Home"</span>)</span>
-<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>         )</span>
-<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a><span class="do">## More cleaning. </span></span>
-<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>ccset <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> </span>
-<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(county, perc_white, perc_black, perc_hisp, poverty_rate, unemployment_rate, county_name, OPERATION_ID, OPERATION_NAME, LOCATION_ADDRESS, ACCEPTS_CHILD_CARE_SUBSIDIES, HOURS_OF_OPERATION, DAYS_OF_OPERATION, TOTAL_CAPACITY, prov_type, total_pop, urban_rural, pop04) <span class="sc">%&gt;%</span> <span class="do">##Trim dataset to variables we want</span></span>
-<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename_with</span>(tolower, <span class="at">.cols =</span> <span class="fu">everything</span>()) <span class="sc">%&gt;%</span> <span class="do">## Rename to lowercase for easier typing </span></span>
-<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">prov_type =</span> <span class="fu">as.factor</span>(prov_type), <span class="do">## Convert to factor</span></span>
-<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>         <span class="at">county_name =</span> <span class="fu">as.factor</span>(county_name), <span class="do">## Convert to factor</span></span>
-<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>         <span class="at">days_of_operation =</span> <span class="fu">as.factor</span>(days_of_operation) <span class="do">## Convert to factor</span></span>
-<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
-<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">hours_open =</span> <span class="fu">str_split_i</span>(hours_of_operation, <span class="st">"-"</span>, <span class="dv">1</span>), <span class="do">## Isolate Opening Time</span></span>
-<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a>         <span class="at">hours_close =</span> <span class="fu">str_split_i</span>(hours_of_operation, <span class="st">"-"</span>, <span class="dv">2</span>)) <span class="sc">%&gt;%</span> <span class="do">## Isolate Closing time</span></span>
-<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">hours_close_hr =</span> <span class="fu">as.numeric</span>(<span class="fu">str_split_i</span>(hours_close, <span class="st">":"</span>, <span class="dv">1</span>)), <span class="do">## Isolate closing hour</span></span>
-<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a>         <span class="at">hours_close_min =</span> <span class="fu">str_split_i</span>(hours_close, <span class="st">":"</span>, <span class="dv">2</span>), <span class="do">## Isolate closing minute = AM PM</span></span>
-<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a>         <span class="at">hours_close_aft =</span> <span class="fu">str_split_i</span>(hours_close, <span class="st">" "</span>, <span class="dv">2</span>)) <span class="sc">%&gt;%</span> <span class="do">## Isolate AM vs. PM</span></span>
-<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">hours_close_min =</span> <span class="fu">as.numeric</span>(<span class="fu">str_split_i</span>(hours_close_min, <span class="st">" "</span>, <span class="dv">1</span>))) <span class="sc">%&gt;%</span> <span class="do">## Isolate closing minute</span></span>
-<span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">hours_close_hrplus12 =</span> hours_close_hr <span class="sc">+</span> <span class="dv">12</span>) <span class="sc">%&gt;%</span> <span class="do">## Convert closing hour to 24-hour time (PM)</span></span>
-<span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">hours_close_hr24 =</span> <span class="fu">case_when</span>(hours_close_aft <span class="sc">==</span> <span class="st">"PM"</span> <span class="sc">~</span> hours_close_hrplus12, <span class="do">## Use 24-hour PM time if PM</span></span>
-<span id="cb4-47"><a href="#cb4-47" aria-hidden="true" tabindex="-1"></a>                                      hours_close_aft <span class="sc">==</span> <span class="st">"AM"</span> <span class="sc">~</span> hours_close_hr) <span class="do">## Use 24-hour AM time if AM</span></span>
-<span id="cb4-48"><a href="#cb4-48" aria-hidden="true" tabindex="-1"></a>         ) <span class="sc">%&gt;%</span> </span>
-<span id="cb4-49"><a href="#cb4-49" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">hours_close_hr24 =</span> (hours_close_hr24<span class="sc">*</span><span class="dv">100</span>)<span class="sc">+</span>hours_close_min) <span class="sc">%&gt;%</span> <span class="do">## Multiply by 100 so 12 hours becomes 1200</span></span>
-<span id="cb4-50"><a href="#cb4-50" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">!</span><span class="fu">c</span>(hours_close_hr, hours_close_min, hours_close_hrplus12, hours_close_aft)) <span class="sc">%&gt;%</span> </span>
-<span id="cb4-51"><a href="#cb4-51" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">open_aft_6 =</span> <span class="fu">case_when</span>(hours_close_hr24 <span class="sc">&gt;</span> <span class="dv">1800</span> <span class="sc">~</span> <span class="dv">1</span>, <span class="do">## Open_aft_6 = 1 if open past 6 pm</span></span>
-<span id="cb4-52"><a href="#cb4-52" aria-hidden="true" tabindex="-1"></a>                                          <span class="cn">TRUE</span> <span class="sc">~</span> <span class="dv">0</span>)) <span class="sc">%&gt;%</span> <span class="do">## Otherwise 0</span></span>
-<span id="cb4-53"><a href="#cb4-53" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">open_wknd =</span> <span class="fu">case_when</span>(<span class="fu">str_detect</span>(days_of_operation, <span class="st">"Sat"</span>) <span class="sc">~</span> <span class="dv">1</span>, <span class="do">## Open weekend = 1 if open Saturday</span></span>
-<span id="cb4-54"><a href="#cb4-54" aria-hidden="true" tabindex="-1"></a>                               <span class="fu">str_detect</span>(days_of_operation, <span class="st">"Sun"</span>) <span class="sc">~</span> <span class="dv">1</span>, <span class="do">## or Sunday</span></span>
-<span id="cb4-55"><a href="#cb4-55" aria-hidden="true" tabindex="-1"></a>                               <span class="cn">TRUE</span> <span class="sc">~</span> <span class="dv">0</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb4-56"><a href="#cb4-56" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">urban_rural =</span> <span class="fu">as.factor</span>(urban_rural)) <span class="sc">%&gt;%</span> <span class="do">## Convert to factor</span></span>
-<span id="cb4-57"><a href="#cb4-57" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">total_cap_home =</span> <span class="fu">case_when</span>(prov_type <span class="sc">==</span> <span class="st">"Home"</span> <span class="sc">~</span> total_capacity, <span class="do">## Total capacity just for Homes</span></span>
-<span id="cb4-58"><a href="#cb4-58" aria-hidden="true" tabindex="-1"></a>                                    <span class="cn">TRUE</span> <span class="sc">~</span> <span class="dv">0</span>),</span>
-<span id="cb4-59"><a href="#cb4-59" aria-hidden="true" tabindex="-1"></a>         <span class="at">total_cap_center =</span>  <span class="fu">case_when</span>(prov_type <span class="sc">==</span> <span class="st">"Center"</span> <span class="sc">~</span> total_capacity, <span class="do">## Total capacity just for Centers</span></span>
-<span id="cb4-60"><a href="#cb4-60" aria-hidden="true" tabindex="-1"></a>                                       <span class="cn">TRUE</span> <span class="sc">~</span> <span class="dv">0</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>cc <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"/home/hilary/Documents/R/RExample/HHSC_CCL_Daycare_and_Residential_Operations_Data_20250406.csv"</span>) </span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="do">## Prepare for joining with census_demo. Requires County name to be uppercase without COUNTY word</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>cc <span class="ot">&lt;-</span> cc <span class="sc">%&gt;%</span> </span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">county =</span> <span class="st">"COUNTY"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">county_name=</span><span class="fu">paste</span>(COUNTY, county, <span class="at">sep =</span> <span class="st">" "</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">case_when</span>(county_name <span class="sc">==</span> <span class="st">"DEAFSMITH COUNTY"</span> <span class="sc">~</span> <span class="st">"DEAF SMITH COUNTY"</span>,</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>                   <span class="cn">TRUE</span> <span class="sc">~</span> county_name )) <span class="sc">%&gt;%</span> </span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">!</span>county)</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="do">##Join census_demo with child care data</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> census_demo <span class="sc">%&gt;%</span> </span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a> <span class="fu">full_join</span>(cc)</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a><span class="do">## Clean up Child Care data ####</span></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Remove non-traditional child care programs and combine registered and licensed child care homes as "Home"s</span></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> </span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(OPERATION_TYPE <span class="sc">!=</span> <span class="st">"Child Placing Agency"</span> <span class="sc">&amp;</span> OPERATION_TYPE <span class="sc">!=</span> <span class="st">"General Residential Operation"</span> <span class="sc">&amp;</span> OPERATION_TYPE <span class="sc">!=</span> <span class="st">"Listed Family Home"</span>)  <span class="sc">%&gt;%</span> </span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>( <span class="fu">is.na</span>(CARE_TYPE) <span class="sc">|</span> (CARE_TYPE <span class="sc">!=</span> <span class="st">"Before/After School Program"</span> <span class="sc">&amp;</span> CARE_TYPE <span class="sc">!=</span> <span class="st">"School Age Program"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(TEMPORARILY_CLOSED <span class="sc">!=</span> <span class="st">"YES"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">operation_type =</span> OPERATION_TYPE) <span class="sc">%&gt;%</span> </span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">prov_type =</span> <span class="fu">case_when</span>(operation_type <span class="sc">==</span> <span class="st">"Licensed Center"</span> <span class="sc">~</span> <span class="st">"Center"</span>,</span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>                               operation_type <span class="sc">==</span> <span class="st">"Registered Child-Care Home"</span> <span class="sc">~</span> <span class="st">"Home"</span>,</span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>                               operation_type <span class="sc">==</span> <span class="st">"Licensed Child-Care Home"</span> <span class="sc">~</span> <span class="st">"Home"</span>)</span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>         )</span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a><span class="do">## More cleaning. </span></span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>ccset <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> </span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(county, perc_white, perc_black, perc_hisp, poverty_rate, unemployment_rate, county_name, OPERATION_ID, OPERATION_NAME, LOCATION_ADDRESS, ACCEPTS_CHILD_CARE_SUBSIDIES, HOURS_OF_OPERATION, DAYS_OF_OPERATION, TOTAL_CAPACITY, prov_type, total_pop, urban_rural, pop04) <span class="sc">%&gt;%</span> <span class="do">##Trim data set to variables we want</span></span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename_with</span>(tolower, <span class="at">.cols =</span> <span class="fu">everything</span>()) <span class="sc">%&gt;%</span> <span class="do">## Rename to lowercase for easier typing </span></span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">prov_type =</span> <span class="fu">as.factor</span>(prov_type), <span class="do">## Convert to factor</span></span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>         <span class="at">county_name =</span> <span class="fu">as.factor</span>(county_name), <span class="do">## Convert to factor</span></span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>         <span class="at">days_of_operation =</span> <span class="fu">as.factor</span>(days_of_operation) <span class="do">## Convert to factor</span></span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">hours_open =</span> <span class="fu">str_split_i</span>(hours_of_operation, <span class="st">"-"</span>, <span class="dv">1</span>), <span class="do">## Isolate Opening Time</span></span>
+<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a>         <span class="at">hours_close =</span> <span class="fu">str_split_i</span>(hours_of_operation, <span class="st">"-"</span>, <span class="dv">2</span>)) <span class="sc">%&gt;%</span> <span class="do">## Isolate Closing time</span></span>
+<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">hours_close_hr =</span> <span class="fu">as.numeric</span>(<span class="fu">str_split_i</span>(hours_close, <span class="st">":"</span>, <span class="dv">1</span>)), <span class="do">## Isolate closing hour</span></span>
+<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a>         <span class="at">hours_close_min =</span> <span class="fu">str_split_i</span>(hours_close, <span class="st">":"</span>, <span class="dv">2</span>), <span class="do">## Isolate closing minute = AM PM</span></span>
+<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a>         <span class="at">hours_close_aft =</span> <span class="fu">str_split_i</span>(hours_close, <span class="st">" "</span>, <span class="dv">2</span>)) <span class="sc">%&gt;%</span> <span class="do">## Isolate AM vs. PM</span></span>
+<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">hours_close_min =</span> <span class="fu">as.numeric</span>(<span class="fu">str_split_i</span>(hours_close_min, <span class="st">" "</span>, <span class="dv">1</span>))) <span class="sc">%&gt;%</span> <span class="do">## Isolate closing minute</span></span>
+<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">hours_close_hrplus12 =</span> hours_close_hr <span class="sc">+</span> <span class="dv">12</span>) <span class="sc">%&gt;%</span> <span class="do">## Convert closing hour to 24-hour time (PM)</span></span>
+<span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">hours_close_hr24 =</span> <span class="fu">case_when</span>(hours_close_aft <span class="sc">==</span> <span class="st">"PM"</span> <span class="sc">~</span> hours_close_hrplus12, <span class="do">## Use 24-hour PM time if PM</span></span>
+<span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a>                                      hours_close_aft <span class="sc">==</span> <span class="st">"AM"</span> <span class="sc">~</span> hours_close_hr) <span class="do">## Use 24-hour AM time if AM</span></span>
+<span id="cb4-47"><a href="#cb4-47" aria-hidden="true" tabindex="-1"></a>         ) <span class="sc">%&gt;%</span> </span>
+<span id="cb4-48"><a href="#cb4-48" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">hours_close_hr24 =</span> (hours_close_hr24<span class="sc">*</span><span class="dv">100</span>)<span class="sc">+</span>hours_close_min) <span class="sc">%&gt;%</span> <span class="do">## Multiply by 100 so 12 hours becomes 1200</span></span>
+<span id="cb4-49"><a href="#cb4-49" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">!</span><span class="fu">c</span>(hours_close_hr, hours_close_min, hours_close_hrplus12, hours_close_aft)) <span class="sc">%&gt;%</span> </span>
+<span id="cb4-50"><a href="#cb4-50" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">open_aft_6 =</span> <span class="fu">case_when</span>(hours_close_hr24 <span class="sc">&gt;</span> <span class="dv">1800</span> <span class="sc">~</span> <span class="dv">1</span>, <span class="do">## Open_aft_6 = 1 if open past 6 pm</span></span>
+<span id="cb4-51"><a href="#cb4-51" aria-hidden="true" tabindex="-1"></a>                                          <span class="cn">TRUE</span> <span class="sc">~</span> <span class="dv">0</span>)) <span class="sc">%&gt;%</span> <span class="do">## Otherwise 0</span></span>
+<span id="cb4-52"><a href="#cb4-52" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">open_wknd =</span> <span class="fu">case_when</span>(<span class="fu">str_detect</span>(days_of_operation, <span class="st">"Sat"</span>) <span class="sc">~</span> <span class="dv">1</span>, <span class="do">## Open weekend = 1 if open Saturday</span></span>
+<span id="cb4-53"><a href="#cb4-53" aria-hidden="true" tabindex="-1"></a>                               <span class="fu">str_detect</span>(days_of_operation, <span class="st">"Sun"</span>) <span class="sc">~</span> <span class="dv">1</span>, <span class="do">## or Sunday</span></span>
+<span id="cb4-54"><a href="#cb4-54" aria-hidden="true" tabindex="-1"></a>                               <span class="cn">TRUE</span> <span class="sc">~</span> <span class="dv">0</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb4-55"><a href="#cb4-55" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">urban_rural =</span> <span class="fu">as.factor</span>(urban_rural)) <span class="sc">%&gt;%</span> <span class="do">## Convert to factor</span></span>
+<span id="cb4-56"><a href="#cb4-56" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">total_cap_home =</span> <span class="fu">case_when</span>(prov_type <span class="sc">==</span> <span class="st">"Home"</span> <span class="sc">~</span> total_capacity, <span class="do">## Total capacity just for Homes</span></span>
+<span id="cb4-57"><a href="#cb4-57" aria-hidden="true" tabindex="-1"></a>                                    <span class="cn">TRUE</span> <span class="sc">~</span> <span class="dv">0</span>),</span>
+<span id="cb4-58"><a href="#cb4-58" aria-hidden="true" tabindex="-1"></a>         <span class="at">total_cap_center =</span>  <span class="fu">case_when</span>(prov_type <span class="sc">==</span> <span class="st">"Center"</span> <span class="sc">~</span> total_capacity, <span class="do">## Total capacity just for Centers</span></span>
+<span id="cb4-59"><a href="#cb4-59" aria-hidden="true" tabindex="-1"></a>                                       <span class="cn">TRUE</span> <span class="sc">~</span> <span class="dv">0</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="collapse-to-county-level-values" class="level2">
@@ -737,7 +736,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="SampleQuartoDoe_files/figure-html/Barplot1-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="SampleQuartoDoe_files/figure-html/Bar%20plot1-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -747,7 +746,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="SampleQuartoDoe_files/figure-html/Barplot2-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="SampleQuartoDoe_files/figure-html/Bar%20plot2-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -897,7 +896,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 </div>
 </div>
-<p>You can see from the likelihood ratio test below, that adding an interaction between poverty rate and urban/rural status significantly improves model fit (<em>p</em> &lt; .000). You can also see from the results above that interaction itself is significant (<em>p</em> = 0029). Although poverty rate does not predict child care coverage in rural counties, in urban counties an increase in poverty rate by 1 percent is associated with a 1.09 percentage point decrease in child care coverage.</p>
+<p>You can see from the likelihood ratio test below, that adding an interaction between poverty rate and urban/rural status significantly improves model fit (<em>p</em> &lt; 0.001). You can also see from the results above that interaction itself is significant (<em>p</em> = 0.029). Although poverty rate does not predict child care coverage in rural counties, in urban counties an increase in poverty rate by 1 percent is associated with a 1.09 percentage point decrease in child care coverage.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Compare models</span></span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>cap_pov_sum2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(perc_pop04_cap <span class="sc">~</span> poverty_rate <span class="sc">+</span> urban_rural, <span class="at">data=</span> sum)</span>
@@ -929,7 +928,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </section>
 <section id="summary" class="level2">
 <h2 class="anchored" data-anchor-id="summary">Summary</h2>
-<p>Analysis indicates that within urban Texas counties, on average counties with higher poverty rates may have have lower overall child care availability for their early childhood population. Although licensed capacity is just a rough proxy of child care supply and the population of children under 5 years is a rough proxy for child care demand, the results suggest that inequity of child care coverage may be present in urban Texas counties.</p>
+<p>Results indicate, on average, urban Texas counties with higher poverty rates may have have lower overall child care availability for their early childhood population. Although licensed capacity is just a rough proxy of child care supply, and the population of children under 5 years is a rough proxy for child care demand, the results suggest the presence of inequity of child care coverage in urban Texas counties.</p>
 </section>
 </section>
 
