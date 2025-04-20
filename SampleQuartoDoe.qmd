@@ -4,16 +4,16 @@ author: "Hilary Doe, PhD"
 format: 
   html:
     code-overflow: wrap
-editor: visual
+editor: source
 ---
 
 # Purpose
 
-This Quarto document is designed to demonstrate some of my basic knowledge and skills using R s.
+This Quarto document is designed to demonstrate some of my basic knowledge and skills using R.
 
 # Quarto/Rmarkdown Use
 
-I composed this Quarto document in the "**Source** View" rather than relying on the **Visual** View" to further demonstrate my coding abilities.
+I composed this Quarto document in the "**Source** View" rather than relying on the "**Visual** View" to further demonstrate my coding abilities.
 
 This document begins with a code-chunk in which I library the necessary packages, but with `include: false` to avoid including the code and output in the resulting document.
 
@@ -499,7 +499,7 @@ tab <- tblFun(urban$urban_rural)
 kable(tab, format = "html", caption = "Texas Counties: Urban/Rural Status") 
 ```
 
-As suggested from the barplot below, much of the Texas population is concentrated in a few counties with large cities.
+As suggested from the bar plot below, much of the Texas population is concentrated in a few counties with large cities.
 
 ```{r}
 #| label: Barplot1
