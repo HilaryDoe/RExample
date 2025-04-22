@@ -246,10 +246,10 @@ Texas county FIPS Codes were retrieved from the [US Census Bureau](https://www.c
 ## Read in FIPS codes so we can join frames (Downloaded from https://www.census.gov/library/reference/code-lists/ansi.html#cou)
 fips <- read_delim("/home/hilary/Documents/R/RExample/countyfips.txt", col_names = TRUE, delim = "|")
 fips <- fips %>% 
-  mutate(county=paste(STATEFP, COUNTYFP, sep = "")) %>% 
+  mutate(county=paste(STATEFP, COUNTYFP, sep = "")) %>% ## Combine STATEFP and COUNTYFP for full FIPS code
   rename(county_name = COUNTYNAME) %>% 
   select(county, county_name) %>% 
-  mutate(county_name = str_to_upper(county_name))
+  mutate(county_name = str_to_upper(county_name)) ## To Upper case
 
 ##Join census demo with FIPS codes
 census_demo <- census_demo %>%
@@ -270,9 +270,9 @@ Rural Urban Continuum codes were retrieved from the [USDA Economic Research Serv
 urban <- read_xlsx("/home/hilary/Documents/R/RExample/Ruralurbancontinuumcodes2023.xlsx") 
 urban <- urban %>% 
   filter(State == "TX") %>% 
-  mutate(urban_rural = case_when(RUCC_2023 < 4 ~ "Urban",
-                                 RUCC_2023 >= 4 ~ "Rural")) %>% 
-  rename(county = FIPS) %>% 
+  mutate(urban_rural = case_when(RUCC_2023 < 4 ~ "Urban", ## < 4 is considered rural
+                                 RUCC_2023 >= 4 ~ "Rural")) %>% ## >= 4 is considered urban
+  rename(county = FIPS) %>% ## Rename to FIPS for joining
   select(county, urban_rural)
 
 ## Join census demo with urban/rural info
@@ -297,7 +297,7 @@ cc <- read_csv("/home/hilary/Documents/R/RExample/HHSC_CCL_Daycare_and_Residenti
 ## Prepare for joining with census_demo. Requires County name to be uppercase without COUNTY word
 cc <- cc %>% 
   mutate(county = "COUNTY") %>% 
-  mutate(county_name=paste(COUNTY, county, sep = " ")) %>%
+  mutate(county_name=paste(COUNTY, county, sep = " ")) %>% ## Add " COUNTY" to end of county names for clean joining
   mutate(case_when(county_name == "DEAFSMITH COUNTY" ~ "DEAF SMITH COUNTY",
                    TRUE ~ county_name )) %>% 
   select(!county)
