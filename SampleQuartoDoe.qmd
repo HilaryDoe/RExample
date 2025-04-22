@@ -60,7 +60,7 @@ In this document I will:
     -   Bar charts
     -   Scatter plots with regression lines
 
-At times code and output has been excised from the document to avoid excessive verbosity.
+I will alternate between showing all code, all code and output, and just output within the document to display my current coding style in some places and simplify the output in others.
 
 # Import and Clean Data
 
@@ -429,7 +429,7 @@ kable(cor, format = "html", digits=3) %>%
   kable_styling(font_size = 10)
 ```
 
-Unsurprisingly, a county's total population size (**total_pop**) is highly correlated with the total number of child care providers in the county (**county_cap_n**; *r* = 0.992, *p*\< 0.001) and total number child care slots in the county (**county_cap_sum**; *r* = 0.988, *p*\< 0.001). As population increases, child care supply increases.
+Unsurprisingly, a county's total population size (`total_pop`) is highly correlated with the total number of child care providers in the county (`county_cap_n`; *r* = 0.992, *p*\< 0.001) and total number child care slots in the county (`county_cap_sum`; *r* = 0.988, *p*\< 0.001). As population increases, child care supply increases.
 
 Next we see that as a county's total population increases, the percentage of White residents decreases (*r* = -0.204, *p*= 0.018) and the percentage of Black residents increases (*r* = 0.271, *p* \< 0.001). However, a county's population size is not significantly correlated with the percentage of Hispanic residents (*r* = 0.065, *p*= 1.000).
 
