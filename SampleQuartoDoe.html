@@ -107,11 +107,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="purpose" class="level1">
 <h1>Purpose</h1>
-<p>I created this Quarto document an informal demonstration some of my basic knowledge and skills using R for data cleaning and analysis.</p>
+<p>I created this Quarto document as an informal demonstration some of my basic knowledge and skills using R for data cleaning and analysis.</p>
 </section>
 <section id="quartormarkdown-use" class="level1">
 <h1>Quarto/Rmarkdown Use</h1>
-<p>I composed this Quarto document in the “<strong>Source</strong> View” rather than relying on the “<strong>Visual</strong> View” to further demonstrate my coding abilities.</p>
+<p>This Quarto document was created in the “<strong>Source</strong> View” rather than relying on the “<strong>Visual</strong> View” in order to further demonstrate my coding abilities.</p>
 <p>This document begins with a code-chunk in which I library the necessary packages, but with <code>include: false</code> to avoid including the code and output in the resulting document.</p>
 <p>In this document I will:</p>
 <ul>
@@ -297,16 +297,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="fips-codes" class="level2">
 <h2 class="anchored" data-anchor-id="fips-codes">FIPS Codes</h2>
-<p>Texas county FIPS Codes were received from the <a href="https://www.census.gov/library/reference/code-lists/ansi.html#cou">US Census Bureau</a> website.</p>
+<p>Texas county FIPS Codes were retrieved from the <a href="https://www.census.gov/library/reference/code-lists/ansi.html#cou">US Census Bureau</a> website.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="do">## FIPS Codes ####</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="do">## Read in FIPS codes so we can join frames (Downloaded from https://www.census.gov/library/reference/code-lists/ansi.html#cou)</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>fips <span class="ot">&lt;-</span> <span class="fu">read_delim</span>(<span class="st">"/home/hilary/Documents/R/RExample/countyfips.txt"</span>, <span class="at">col_names =</span> <span class="cn">TRUE</span>, <span class="at">delim =</span> <span class="st">"|"</span>)</span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>fips <span class="ot">&lt;-</span> fips <span class="sc">%&gt;%</span> </span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">county=</span><span class="fu">paste</span>(STATEFP, COUNTYFP, <span class="at">sep =</span> <span class="st">""</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">county=</span><span class="fu">paste</span>(STATEFP, COUNTYFP, <span class="at">sep =</span> <span class="st">""</span>)) <span class="sc">%&gt;%</span> <span class="do">## Combine STATEFP and COUNTYFP for full FIPS code</span></span>
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">county_name =</span> COUNTYNAME) <span class="sc">%&gt;%</span> </span>
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(county, county_name) <span class="sc">%&gt;%</span> </span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">county_name =</span> <span class="fu">str_to_upper</span>(county_name))</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">county_name =</span> <span class="fu">str_to_upper</span>(county_name)) <span class="do">## To Upper case</span></span>
 <span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="do">##Join census demo with FIPS codes</span></span>
 <span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>census_demo <span class="ot">&lt;-</span> census_demo <span class="sc">%&gt;%</span></span>
@@ -315,16 +315,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="urbanrural-status" class="level2">
 <h2 class="anchored" data-anchor-id="urbanrural-status">Urban/Rural Status</h2>
-<p>Rural Urban Continuum codes were downloaded from the <a href="https://www.ers.usda.gov/data-products/rural-urban-continuum-codes">USDA Economic Research Service</a>.</p>
+<p>Rural Urban Continuum codes were retrieved from the <a href="https://www.ers.usda.gov/data-products/rural-urban-continuum-codes">USDA Economic Research Service</a>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Urban and Rural status ####</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="do">## Read in urban/rural county (Downloaded from https://www.ers.usda.gov/data-products/rural-urban-continuum-codes)</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>urban <span class="ot">&lt;-</span> <span class="fu">read_xlsx</span>(<span class="st">"/home/hilary/Documents/R/RExample/Ruralurbancontinuumcodes2023.xlsx"</span>) </span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>urban <span class="ot">&lt;-</span> urban <span class="sc">%&gt;%</span> </span>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(State <span class="sc">==</span> <span class="st">"TX"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">urban_rural =</span> <span class="fu">case_when</span>(RUCC_2023 <span class="sc">&lt;</span> <span class="dv">4</span> <span class="sc">~</span> <span class="st">"Urban"</span>,</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>                                 RUCC_2023 <span class="sc">&gt;=</span> <span class="dv">4</span> <span class="sc">~</span> <span class="st">"Rural"</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">county =</span> FIPS) <span class="sc">%&gt;%</span> </span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">urban_rural =</span> <span class="fu">case_when</span>(RUCC_2023 <span class="sc">&lt;</span> <span class="dv">4</span> <span class="sc">~</span> <span class="st">"Urban"</span>, <span class="do">## &lt; 4 is considered rural</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>                                 RUCC_2023 <span class="sc">&gt;=</span> <span class="dv">4</span> <span class="sc">~</span> <span class="st">"Rural"</span>)) <span class="sc">%&gt;%</span> <span class="do">## &gt;= 4 is considered urban</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">county =</span> FIPS) <span class="sc">%&gt;%</span> <span class="do">## Rename to FIPS for joining</span></span>
 <span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(county, urban_rural)</span>
 <span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="do">## Join census demo with urban/rural info</span></span>
@@ -334,7 +334,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="texas-child-care-data" class="level2">
 <h2 class="anchored" data-anchor-id="texas-child-care-data">Texas Child Care Data</h2>
-<p>The Texas Child Care Data was downloaded from the <a href="https://data.texas.gov/See-Category-Tile/HHSC-CCL-Daycare-and-Residential-Operations-Data/bc5r-88dy/about_data">Texas Open Data Portal</a>.</p>
+<p>The Texas Child Care Data was retrieved from the <a href="https://data.texas.gov/See-Category-Tile/HHSC-CCL-Daycare-and-Residential-Operations-Data/bc5r-88dy/about_data">Texas Open Data Portal</a>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Child Care Data ####</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="do">## Open Child Care Data #### </span></span>
@@ -344,7 +344,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="do">## Prepare for joining with census_demo. Requires County name to be uppercase without COUNTY word</span></span>
 <span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>cc <span class="ot">&lt;-</span> cc <span class="sc">%&gt;%</span> </span>
 <span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">county =</span> <span class="st">"COUNTY"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">county_name=</span><span class="fu">paste</span>(COUNTY, county, <span class="at">sep =</span> <span class="st">" "</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">county_name=</span><span class="fu">paste</span>(COUNTY, county, <span class="at">sep =</span> <span class="st">" "</span>)) <span class="sc">%&gt;%</span> <span class="do">## Add " COUNTY" to end of county names for clean joining</span></span>
 <span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">case_when</span>(county_name <span class="sc">==</span> <span class="st">"DEAFSMITH COUNTY"</span> <span class="sc">~</span> <span class="st">"DEAF SMITH COUNTY"</span>,</span>
 <span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>                   <span class="cn">TRUE</span> <span class="sc">~</span> county_name )) <span class="sc">%&gt;%</span> </span>
 <span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">!</span>county)</span>
@@ -687,9 +687,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </div>
 </div>
-<p>Unsurprisingly, a county’s total population size (total_pop) is highly correlated with the total number of child care providers in the county (county_cap_n; <em>r</em> = 0.992, <em>p</em>&lt; 0.001) and total number child care slots in the county (county_cap_sum; <em>r</em> = 0.988, <em>p</em>&lt; 0.001). As population increases, child care supply increases.</p>
+<p>Unsurprisingly, a county’s total population size (<code>total_pop</code>) is highly correlated with the total number of child care providers in the county (<code>county_cap_n</code>; <em>r</em> = 0.992, <em>p</em>&lt; 0.001) and total number child care slots in the county (<code>county_cap_sum</code>; <em>r</em> = 0.988, <em>p</em>&lt; 0.001). As population increases, child care supply increases.</p>
 <p>Next we see that as a county’s total population increases, the percentage of White residents decreases (<em>r</em> = -0.204, <em>p</em>= 0.018) and the percentage of Black residents increases (<em>r</em> = 0.271, <em>p</em> &lt; 0.001). However, a county’s population size is not significantly correlated with the percentage of Hispanic residents (<em>r</em> = 0.065, <em>p</em>= 1.000).</p>
-<p>We can see below that even in Urban Texas counties, a small percentage of the population identifies as Black.</p>
+<p>We can see below that even in urban Texas counties, a small percentage of the population identifies as Black.</p>
 <div class="cell">
 <div class="cell-output-display">
 <div>
@@ -751,7 +751,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<p>This raises the question whether child care coverage may be lower in higher poverty areas, which we can test with linear regression. Next, I am going to create a function and use it to output regression results. I realize this function does not save much work, but wanted to demonstrate my ability to create and use my own function.</p>
+<p>This raises the question of whether child care coverage may be lower in higher poverty areas, which we can test with linear regression. Next, I am going to create a function and use it to output regression results. I realize this function does not save much effort, but I wanted to demonstrate my ability to create and use my own function.</p>
 <p>For the following analysis, I am using the variable perc_pop04_cap, which is meant to be a proxy child care coverage/availability in the county. I calculated perc_pop04_cap as <strong>(total number licensed capacity child care slots)/(Total population of children under 5 years) X 100</strong>, and top-coded this to 100%. It is important to note that most child care providers never operate at their full licensed capacity, which is determined based on physical space available to the operation. From previous research, we estimate that on average, Texas child care providers operate at approximately 70% of their total licensed capacity.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Create functions for simple Regression output </span></span>
@@ -792,7 +792,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 </div>
 </div>
-<p>The results indicate that poverty rate does <em>not</em> significantly predict child care availability in the full population of Texas counties. However, what we looked at before was the highest populated counties, that tend to surround urban areas. Let’s look at a graph showing how the association between child care availability and population differs by urban/rural status.</p>
+<p>The results indicate that poverty rate does <em>not</em> significantly predict child care availability in the full population of Texas counties. However, what we looked at before was the highest populated counties, which tend to surround urban areas. Let’s look at a graph showing how the association between child care availability and population differs by urban/rural status.</p>
 <div class="cell">
 <div class="cell-output cell-output-stderr">
 <pre><code>`geom_smooth()` using formula = 'y ~ x'</code></pre>
@@ -896,7 +896,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 </div>
 </div>
-<p>You can see from the likelihood ratio test below, that adding an interaction between poverty rate and urban/rural status significantly improves model fit (<em>p</em> &lt; 0.001). You can also see from the results above that interaction itself is significant (<em>p</em> = 0.029). Although poverty rate does not predict child care coverage in rural counties, in urban counties an increase in poverty rate by 1 percent is associated with a 1.09 percentage point decrease in child care coverage.</p>
+<p>You can see from the likelihood ratio test below that adding an interaction between poverty rate and urban/rural status significantly improves model fit (<em>p</em> &lt; 0.001). You can also see from the results above that interaction itself is significant (<em>p</em> = 0.029). Although poverty rate does not predict child care coverage in rural counties, in urban counties an increase in poverty rate by 1 percent is associated with a 1.09 percentage point decrease in child care coverage.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Compare models</span></span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>cap_pov_sum2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(perc_pop04_cap <span class="sc">~</span> poverty_rate <span class="sc">+</span> urban_rural, <span class="at">data=</span> sum)</span>
@@ -928,7 +928,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </section>
 <section id="summary" class="level2">
 <h2 class="anchored" data-anchor-id="summary">Summary</h2>
-<p>Results indicate, on average, urban Texas counties with higher poverty rates may have have lower overall child care availability for their early childhood population. Although licensed capacity is just a rough proxy of child care supply, and the population of children under 5 years is a rough proxy for child care demand, the results suggest the presence of inequity of child care coverage in urban Texas counties.</p>
+<p>Results indicate, on average, urban Texas counties with higher poverty rates may have have lower overall child care availability for their early childhood population. Although licensed capacity is only a rough proxy of child care supply, and the population of children under 5 years is a rough proxy for child care demand, the results suggest the presence of inequity of child care coverage in urban Texas counties.</p>
 </section>
 </section>
 
